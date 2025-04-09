@@ -1,17 +1,27 @@
 CC = g++
 CFLAGS = -Wall -std=c++11
-all: graph_program
-graph_program: main.o graph.o linkedList.o
-	$(CC) $(CFLAGS) -o graph_program main.o graph.o linkedList.o
+TARGET = graph_algorithms
+SOURCES = main.cpp algorithms.cpp dataStructures.cpp graph.cpp linkedList.cpp 
+OBJECTS = $(SOURCES:.cpp=.o)
+HEADERS = algorithms.h dataStructures.h graph.h linkedList.h
+all : $(TARGET)
 
-main.o: main.cpp graph.h 
-	$(CC) $(CFLAGS) -c main.cpp
+#linking 
+$(TARGET) : $(OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $^
 
-graph.o: graph.cpp graph.h linkedList.h
-	$(CC) $(CFLAGS) -c graph.cpp
+#compiling
 
-linkedList.o: linkedList.cpp linkedList.h node.h
-	$(CC) $(CFLAGS) -c linkedList.cpp
+%.o : %.cpp $(HEADERS)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-clean:
-	rm -f *.o graph_program
+#cleaning
+clean :
+	rm -f $(OBJECTS) $(TARGET)
+
+#running
+run : $(TARGET)
+	./$(TARGET)
+	
+
+.PHONY : all clean

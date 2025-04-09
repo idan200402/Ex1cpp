@@ -28,7 +28,7 @@ private:
         int val;
         int priority;
         Node* next;
-        Node(int val, int prio) : data(val), priority(prio), next(nullptr) {}
+        Node(int val, int prio) : val(val), priority(prio), next(nullptr) {}
     };
     Node* head;
 
@@ -54,7 +54,7 @@ public:
     UnionFind(int n);
     ~UnionFind();
     int find(int x);
-    void union(int x, int y);
+    void unionSets(int x, int y);
 
 };
 
@@ -63,8 +63,10 @@ struct Edge{
     int src;
     int dest;
     int weight;
+    //constructor to initialize the edge.
     Edge(int s, int d, int w) : src(s), dest(d), weight(w) {}
-    
+    //also a default constructor to initialize the edge and then reassign it.
+    Edge() : src(-1), dest(-1), weight(0) {}
     //overloading < operator to compare between any two edges elegantly.
     //for kruskal algo.
     bool operator<(const Edge& other) const {

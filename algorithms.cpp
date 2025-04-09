@@ -1,10 +1,21 @@
 #include "algorithms.h"
 #include <iostream>
 #include "dataStructures.h"
+#include <climits>
+#include <stdexcept>
+#include <string>
 //implementing all the methods declerations.
 namespace graph {
 Graph* Algorithms::bfs(Graph &g , int source){
     int vertices = g.getNumOfVertices();
+    
+    //checking if the source is valid or graph is empty.
+    if(source < 0 || source >= vertices){
+        throw std::out_of_range("Invalid source vertex.");
+    }
+    if(vertices == 0){
+        throw std::invalid_argument("Graph is empty.");
+    }
     //initializing the graph only with the vertices.
     Graph* bfsTree = new Graph(vertices);
     bool* visited = new bool[vertices]; // visited arr.
@@ -21,7 +32,7 @@ Graph* Algorithms::bfs(Graph &g , int source){
         //now exploring the neighbours of the current vertex.
         Node* neighbours = g.getAdjacencyList()[currVisited].getHead();
         while(neighbours != nullptr){
-            int neighbour = neighbours->data;
+            int neighbour = neighbours->vertex;
             if(!visited[neighbour]){
                 visited[neighbour] = true;
                 q.enqueue(neighbour); 
@@ -44,7 +55,7 @@ void Algorithms::dfsHelper(Graph &g , int vertex , bool *visited , Graph *forest
     Node* neighbours = g.getAdjacencyList()[vertex].getHead();
     //iterating through the neighbours until the end.
     while(neighbours != nullptr){
-        int neighbour = neighbours->data;
+        int neighbour = neighbours->vertex;
         if(!visited[neighbour]){
             //this case is a tree edge.
             forest->addEdge(vertex , neighbour , neighbours->weight);
@@ -59,6 +70,15 @@ void Algorithms::dfsHelper(Graph &g , int vertex , bool *visited , Graph *forest
 
 Graph* Algorithms::dfs(Graph &g , int source){
     int vertices = g.getNumOfVertices();
+
+    //checking if the source is valid.
+    if(source < 0 || source >= vertices){
+        throw std::out_of_range("Invalid source vertex.");
+    }
+    //checking if the graph is empty.
+    if(vertices == 0){
+        throw std::invalid_argument("Graph is empty.");
+    }
     //initializing the graph only with the vertices.
     Graph* dfsTree = new Graph(vertices);
     bool* visited = new bool[vertices]; // visited arr.
@@ -75,6 +95,14 @@ Graph* Algorithms::dfs(Graph &g , int source){
 
 Graph* Algorithms::dijkstra(Graph &g , int source){
     int vertices = g.getNumOfVertices();
+    //checking if the source is valid.
+    if(source < 0 || source >= vertices){
+        throw std::out_of_range("Invalid source vertex.");
+    }
+    //checking if the graph is empty.
+    if(vertices == 0){
+        throw std::invalid_argument("Graph is empty.");
+    }
     //initializing the graph only with the vertices.
     Graph* dijkstraTree = new Graph(vertices);
     //creating a distance array to hold the distance from the source to every vertex.
@@ -103,15 +131,24 @@ Graph* Algorithms::dijkstra(Graph &g , int source){
         visited[currVertex] = true;
         Node* neighbours = g.getAdjacencyList()[currVertex].getHead();
         while(neighbours != nullptr){
-            int neighbour = neighbours->data;
+            int neighbour = neighbours->vertex;
             int weight = neighbours->weight;
+            //checking if the weight is negative  , so deallocating the memory and throwing an exception.
+            //this is important since we are using the weight to calculate the distance.
+            if(weight < 0){
+                delete[] dist;
+                delete[] parent;
+                delete[] visited;
+                delete dijkstraTree;
+                throw std::invalid_argument("Negative weight edge were found.");
+            }
             //there there is exist a shorter path to the neighbour under this condition.
             if(!visited[neighbour] && dist[currVertex] != INT_MAX && dist[currVertex] + weight < dist[neighbour]){
                 //updating the new distance and parent.
                 dist[neighbour] = dist[currVertex] + weight;
                 parent[neighbour] = currVertex;
                 //pushing the neighbour to the queue with the new distance.
-                pQueue.push(neighbour , distance[neighbour]);
+                pQueue.push(neighbour , dist[neighbour]);
             }
             neighbours = neighbours->next;
         }
@@ -124,7 +161,7 @@ Graph* Algorithms::dijkstra(Graph &g , int source){
             //iterating through the neighbours to find the weight of the edge.
             int weight = 0;
             while(neighbours != nullptr){
-                if(neighbours->data == i){
+                if(neighbours->vertex == i){
                     weight = neighbours->weight;
                     break;
                 }
@@ -142,6 +179,12 @@ Graph* Algorithms::dijkstra(Graph &g , int source){
 
 Graph* Algorithms::prim(Graph &g){
     int vertices = g.getNumOfVertices();
+    //checking if the graph is empty.
+    if(vertices == 0){
+        throw std::invalid_argument("Graph is empty.");
+    }
+    
+
     //initializing the graph only with the vertices.
     Graph* primTree = new Graph(vertices);
     //the minimum edges we'd like to add to the mst
@@ -162,16 +205,18 @@ Graph* Algorithms::prim(Graph &g){
     PriorityQueue pQueue;
     //pushing the first vertex to the queue with distance 0.
     pQueue.push(0 , 0);
-    while(!pQueue.isEmpty()){
+    int mstVertexCount = 0;
+    while(!pQueue.isEmpty() && mstVertexCount < vertices){
         //vertex with minimum distance.
         int currVertex = pQueue.pop();
         inMST[currVertex] = true;
+        mstVertexCount++;
         if(parent[currVertex] != -1){
             Node* neighbours = g.getAdjacencyList()[currVertex].getHead();
             int weight = 0;
             //iterating through the neighbours to find the minimum edge weight.
             while(neighbours != nullptr){
-                if(neighbours->data == currVertex){
+                if(neighbours->vertex == currVertex){
                     weight = neighbours->weight;
                     break;
                 }
@@ -182,7 +227,7 @@ Graph* Algorithms::prim(Graph &g){
         }
         Node* neighbours = g.getAdjacencyList()[currVertex].getHead();
         while(neighbours != nullptr){
-            int neighbour = neighbours->data;
+            int neighbour = neighbours->vertex;
             int weight = neighbours->weight;
             //there there is exist a shorter path to the neighbour under this condition.
             if(!inMST[neighbour] && weight < key[neighbour]){
@@ -194,6 +239,14 @@ Graph* Algorithms::prim(Graph &g){
             }
             neighbours = neighbours->next;
         }
+    }
+    //check it the mst is valid.
+    if(mstVertexCount != vertices){
+        delete[] key;
+        delete[] parent;
+        delete[] inMST;
+        delete primTree;
+        throw std::invalid_argument("The graph is not connected.");
     }
     //freeing the memory we needed to create the prim tree.
     delete[] key;
@@ -210,7 +263,7 @@ void Algorithms::getAllEdges(Graph &g , Edge* edges , int &edgeCount){
     for(int i = 0 ; i < vertices ; i++){
      Node* neighbours = g.getAdjacencyList()[i].getHead();
         while(neighbours != nullptr){
-            int neighbour = neighbours->data;
+            int neighbour = neighbours->vertex;
             //checking if the edge is already added with compering their identity.
             if(i < neighbour){
                 edges[edgeCount++]= Edge(i , neighbour , neighbours->weight);
@@ -236,6 +289,11 @@ void Algorithms::sortEdges(Edge* edges , int edgeCount){
 //sorting the graph edges and picking the minimum weight edge that do not create a cycle.
 Graph* Algorithms::kruskal(Graph &g){
     int vertices = g.getNumOfVertices();
+
+    //checking if the graph is empty.
+    if(vertices == 0){
+        throw std::invalid_argument("Graph is empty.");
+    }
     //initializing the graph only with the vertices.
     Graph* kruskalTree = new Graph(vertices);
     //allocating memory for the lagest possible edges (n choose 2).
@@ -243,12 +301,19 @@ Graph* Algorithms::kruskal(Graph &g){
     int edgeCount = 0;
     //getting all the edges from the graph.
     getAllEdges(g , edges , edgeCount);
+    //checking if the graph can be connected , if not , we throw an exception.
+    if(edgeCount < vertices - 1){
+        delete[] edges;
+        delete kruskalTree;
+        throw std::runtime_error("The graph is not connected.");
+    }
     //sorting the edges by their weight.
     sortEdges(edges , edgeCount);
     //creating the union find data structure .
     UnionFind uf(vertices);
-    for(int i = 0 ; i < edgeCount ; i++){
-        int u = edges[i].source;
+    int edgesAdded = 0;
+    for(int i = 0 ; i < edgeCount && edgesAdded < vertices -1; i++){
+        int u = edges[i].src;
         int v = edges[i].dest;
         int weight = edges[i].weight;
         int superParentU = uf.find(u);
@@ -258,8 +323,14 @@ Graph* Algorithms::kruskal(Graph &g){
             //adding the edge to the mst.
             kruskalTree->addEdge(u , v , weight);
             //union the two vertices.
-            uf.union(u , v);
+            uf.unionSets(u , v);
         }
+    }
+    //checking if the mst is valid.
+    if(edgesAdded < vertices - 1){
+        delete[] edges;
+        delete kruskalTree;
+        throw std::runtime_error("The graph is not connected.");
     }
     //freeing the memory we needed to create the kruskal tree.
     delete[] edges;

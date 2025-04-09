@@ -1,6 +1,7 @@
 #ifndef ALGORITHMS_H
 #define ALGORITHMS_H
 #include "graph.h"
+#include "dataStructures.h"
 
 namespace graph{
 class Algorithms{

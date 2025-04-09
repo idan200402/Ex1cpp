@@ -1,4 +1,4 @@
-#include "dataStructures.h">
+#include "dataStructures.h"
 #include <iostream>
 
 namespace graph{
@@ -65,7 +65,7 @@ void PriorityQueue::push(int value, int priority){
         while(curr->next != nullptr &&curr->next->priority<=priority){
             curr = curr->next;
         }
-        newNode->next = current -> next;
+        newNode->next = curr -> next;
         curr->next  = newNode;
 
     }
@@ -77,7 +77,7 @@ int PriorityQueue::pop(){
         return -1;
     }
     Node* temp  = head;
-    int v = temp->vertex;
+    int v = temp->val;
     head = head->next;
     //free the pointer address.
     delete temp;
@@ -100,7 +100,7 @@ bool PriorityQueue::contains(int vertex) const{
 void PriorityQueue::decreasePriority(int val , int newPriority){
     Node* curr = head;
     Node* prev = nullptr;
-    if(!contains) return false;
+    if(!contains(val)){ return; }
     while(curr!= nullptr && curr->val!=val){
         prev = curr;
         curr = curr->next;    
@@ -142,7 +142,7 @@ int UnionFind::find(int x){
     }
     return parent[x];    
 }
-void UnionFind::union(int x, int y){
+void UnionFind::unionSets(int x, int y){
     int superParentX = find(x);
     int superParentY = find(y);
     //in case they have the same ancestry.
