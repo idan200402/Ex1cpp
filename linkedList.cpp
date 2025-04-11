@@ -91,6 +91,17 @@ bool LinkedList::hasVertex(int vertex) const {
     }
     return false; 
 }
+//clearing the list.
+void LinkedList::clear() {
+    Node* curr = head;
+    while (curr != nullptr) {
+        Node* nextNode = curr->next;
+        //free the memory of the current node and then updating it.
+        delete curr;
+        curr = nextNode;
+    }
+    head = nullptr; 
+}
 }
 
 

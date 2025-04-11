@@ -18,5 +18,5 @@ public:
     const LinkedList* getAdjacencyList() const { return adjacencyList; }
 
 };
-#endif 
 }
+#endif 

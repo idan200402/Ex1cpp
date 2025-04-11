@@ -6,15 +6,15 @@ Graph:: Graph(int vertices) : numOfVertices(vertices) {
 }
 //destructor implementation:
 Graph::~Graph() {
+    //deleteing the adjacency list , first we clear each linked list and then delete the array.
+    for(int i = 0; i < numOfVertices; i++) {
+        adjacencyList[i].clear(); 
+    }
     delete[] adjacencyList; 
 }
 
 //adding an edge to the Graph implementation.
 void Graph::addEdge(int s , int dest , int weight){
-    if(s < 0 || s >= numOfVertices || dest < 0 || dest >= numOfVertices){
-        std::cout << "Invalid edge." << std::endl;
-        return;
-    }
     //if it valid so adding each node to the other adjacency list.
     adjacencyList[s].addNode(dest , weight);
     adjacencyList[dest].addNode(s , weight);

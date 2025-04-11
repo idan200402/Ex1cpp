@@ -37,6 +37,7 @@ Graph* Algorithms::bfs(Graph &g , int source){
                 visited[neighbour] = true;
                 q.enqueue(neighbour); 
                 bfsTree->addEdge(currVisited , neighbour , neighbours->weight);
+    
             } 
             neighbours = neighbours->next; 
         }
@@ -88,6 +89,13 @@ Graph* Algorithms::dfs(Graph &g , int source){
     }
     //calling the dfsHelper method to start the dfs process.
     dfsHelper(g , source , visited , dfsTree);
+
+    //handling cases of disconnected graphs  , thus the dfs will preform a forest.
+    for(int i = 0 ; i < vertices ; i++){
+        if(!visited[i]){
+            dfsHelper(g , i , visited , dfsTree);
+        }
+    }
     //freeing the memory.
     delete[] visited; 
     return dfsTree;
@@ -106,7 +114,7 @@ Graph* Algorithms::dijkstra(Graph &g , int source){
     //initializing the graph only with the vertices.
     Graph* dijkstraTree = new Graph(vertices);
     //creating a distance array to hold the distance from the source to every vertex.
-    int* dist = new int(vertices);
+    int* dist = new int[vertices];
     //creating a parent array to hold the parent of each vertex.
     int* parent = new int[vertices];
     //storing the visited vertices.
@@ -161,7 +169,7 @@ Graph* Algorithms::dijkstra(Graph &g , int source){
             //iterating through the neighbours to find the weight of the edge.
             int weight = 0;
             while(neighbours != nullptr){
-                if(neighbours->vertex == i){
+                if(neighbours->vertex == parent[i]){
                     weight = neighbours->weight;
                     break;
                 }
@@ -212,7 +220,7 @@ Graph* Algorithms::prim(Graph &g){
         inMST[currVertex] = true;
         mstVertexCount++;
         if(parent[currVertex] != -1){
-            Node* neighbours = g.getAdjacencyList()[currVertex].getHead();
+            Node* neighbours = g.getAdjacencyList()[parent[currVertex]].getHead();
             int weight = 0;
             //iterating through the neighbours to find the minimum edge weight.
             while(neighbours != nullptr){
@@ -257,17 +265,20 @@ Graph* Algorithms::prim(Graph &g){
 
 //this helper method is important method that used in the kruskal algorithm.
 //could make it without it but its the core.
-void Algorithms::getAllEdges(Graph &g , Edge* edges , int &edgeCount){
+void Algorithms::getAllEdges(Graph &g, Edge* edges, int &edgeCount) {
     int vertices = g.getNumOfVertices();
     edgeCount = 0;
-    for(int i = 0 ; i < vertices ; i++){
-     Node* neighbours = g.getAdjacencyList()[i].getHead();
-        while(neighbours != nullptr){
+
+    // Iterate through all vertices
+    for (int i = 0; i < vertices; i++) {
+        Node* neighbours = g.getAdjacencyList()[i].getHead();
+        while (neighbours != nullptr) {
             int neighbour = neighbours->vertex;
-            //checking if the edge is already added with compering their identity.
-            if(i < neighbour){
-                edges[edgeCount++]= Edge(i , neighbour , neighbours->weight);
+            // adding the edge only if it hasn't been added yet (i < neighbour ensures no duplicates)
+            if (i < neighbour) {
+                edges[edgeCount++] = Edge(i, neighbour, neighbours->weight);
             }
+
             neighbours = neighbours->next;
         }
     }
@@ -301,12 +312,6 @@ Graph* Algorithms::kruskal(Graph &g){
     int edgeCount = 0;
     //getting all the edges from the graph.
     getAllEdges(g , edges , edgeCount);
-    //checking if the graph can be connected , if not , we throw an exception.
-    if(edgeCount < vertices - 1){
-        delete[] edges;
-        delete kruskalTree;
-        throw std::runtime_error("The graph is not connected.");
-    }
     //sorting the edges by their weight.
     sortEdges(edges , edgeCount);
     //creating the union find data structure .
@@ -324,6 +329,7 @@ Graph* Algorithms::kruskal(Graph &g){
             kruskalTree->addEdge(u , v , weight);
             //union the two vertices.
             uf.unionSets(u , v);
+            edgesAdded++;
         }
     }
     //checking if the mst is valid.

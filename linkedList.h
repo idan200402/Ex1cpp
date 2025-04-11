@@ -18,6 +18,7 @@ public:
     void displayList() const; 
     bool hasVertex(int vertex) const;
     Node* getHead() const { return head; } 
+    void clear(); 
 };
 }   
 #endif 
