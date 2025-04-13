@@ -1,6 +1,9 @@
+//idan.shumski@gmail.com
+
 #ifndef TEST_HELPERS_H
 #define TEST_HELPERS_H
 #include "graph.h"
+//this file contains helper functions to test the algorithms , it prevents code duplication.
 namespace graph {
 //helper function for bfs and dfs to check if an edge exists in the graph.
 bool edgeExists(graph::Graph &g, int src, int dest) {

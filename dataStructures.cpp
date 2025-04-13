@@ -1,3 +1,5 @@
+//idan.shumski@gmail.com
+
 #include "dataStructures.h"
 #include <iostream>
 

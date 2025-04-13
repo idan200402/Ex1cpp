@@ -1,3 +1,5 @@
+//idan.shumski@gmail.com
+
 #ifndef NODE_H
 #define NODE_H
 namespace graph{

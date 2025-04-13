@@ -1,9 +1,11 @@
+//idan.shumski@gmail.com
+
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 #include "algorithms.h"
 #include <stdexcept>
 #include "test_helpers.h"
-
+//test file for the kruskal algorithm.
 using namespace graph;
 
 TEST_CASE("Kruskal algorithm") {

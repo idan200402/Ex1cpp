@@ -1,3 +1,5 @@
+//idan.shumski@gmail.com
+
 #include "algorithms.h"
 #include <iostream>
 #include <stdexcept>

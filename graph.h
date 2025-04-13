@@ -1,3 +1,5 @@
+//idan.shumski@gmail.com
+
 #ifndef GRAPH_H
 #define GRAPH_H
 #include "linkedList.h"

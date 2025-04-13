@@ -1,3 +1,5 @@
+//idan.shumski@gmail.com
+
 #ifndef DATASTRUCTURES_H
 #define DATASTRUCTURES_H
 //This header file containes the declarations of the DS we need 

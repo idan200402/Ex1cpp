@@ -1,3 +1,5 @@
+//idan.shumski@gmail.com
+
 #ifndef ALGORITHMS_H
 #define ALGORITHMS_H
 #include "graph.h"

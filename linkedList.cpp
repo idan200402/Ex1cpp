@@ -1,3 +1,5 @@
+//idan.shumski@gmail.com
+
 #include "linkedList.h"
 namespace graph{
 //add the implementation of the LinkedList class here

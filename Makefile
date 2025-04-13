@@ -1,3 +1,5 @@
+#idan.shumski@gmail.com
+
 CC = g++
 CFLAGS = -Wall -std=c++11
 TARGET = graph_algorithms  
@@ -25,6 +27,8 @@ $(TARGET) : $(OBJECTS)
 %.o : %.cpp $(HEADERS) 
 	$(CC) $(CFLAGS) -c $< -o $@
 
+
+#linking test files
 $(TEST_BFS): $(TEST_BFS_SRC)  $(HEADERS) test_helpers.h
 	$(CC) $(CFLAGS) -o $@ $(TEST_BFS_SRC)
 
@@ -40,8 +44,9 @@ $(TEST_PRIM): $(TEST_PRIM_SRC) $(HEADERS) test_helpers.h
 $(TEST_KRUSKAL): $(TEST_KRUSKAL_SRC) $(HEADERS)
 	$(CC) $(CFLAGS) -o $@ $(TEST_KRUSKAL_SRC)
 
-#add here other tests
 
+#command to run all tests
+# This will run all the test executables in the order they are listed
 test: $(ALL_TESTS)
 	@echo "Running tests"
 	@for test in $(ALL_TESTS) ; do \
@@ -50,6 +55,8 @@ test: $(ALL_TESTS)
 	done
 	@echo "All tests completed"
 
+
+#because the main in interactive, we need to run the valgrind on the test files.
 valgrind: $(ALL_TESTS)
 	@echo "Running tests with valgrind"
 	@for test in $(ALL_TESTS) ; do \

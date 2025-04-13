@@ -1,3 +1,5 @@
+//idan.shumski@gmail.com
+
 #include "graph.h"
 namespace graph{
 //constructor implementation:

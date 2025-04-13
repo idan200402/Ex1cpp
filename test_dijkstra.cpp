@@ -1,10 +1,12 @@
+//idan.shumski@gmail.com
+
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 #include "algorithms.h"
 #include "stdexcept"
 #include <climits>
 #include "test_helpers.h"
-
+//test file for the dijkstra algorithm.
 using namespace graph;
 
 

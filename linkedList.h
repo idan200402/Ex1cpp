@@ -1,3 +1,5 @@
+//idan.shumski@gmail.com
+
 #ifndef LINKEDLIST_H
 #define LINKEDLIST_H
 
